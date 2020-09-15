@@ -3,6 +3,22 @@ from rest_framework import serializers
 
 
 class ArticleListSerializer(serializers.ModelSerializer):
+    content = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Article
+        fields = [
+            'title',
+            'content'
+        ]
+
+    def get_content(self, object):
+        content = object.content[:700]
+        return content
+
+
+class ArticleDetailSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Article
         fields = [
@@ -10,7 +26,3 @@ class ArticleListSerializer(serializers.ModelSerializer):
             'url',
             'content'
         ]
-
-    def get_content(self, value):
-        return value[:700]
-
