@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 import sys
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 PROJECT_ROOT = os.path.dirname(__file__)
@@ -24,6 +25,9 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'bs4',
+    'redis',
+    'celery',
+    'django_celery_beat',
 
     'articles'
 ]
@@ -83,7 +87,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-RU'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -92,3 +96,11 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
+BROKER_URL = 'redis://localhost:6379'
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_RESULT_SERIALIZER = 'json'
