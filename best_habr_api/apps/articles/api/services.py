@@ -41,13 +41,18 @@ def get_article_content(url, HEADERS):
 
 
 def create_article(title, url, content):
-    """Create article object."""
-    article = Article.objects.create(
+    """Create article object if it not already in the database."""
+    article_obj = Article.objects.filter(
         title=title,
-        url=url,
-        content=content
+        url=url
     )
-    article.save()
+    if not article_obj.exists():
+        article = Article.objects.create(
+            title=title,
+            url=url,
+            content=content
+        )
+        article.save()
 
 
 def parse_and_create_article_list(URL, HEADERS):
