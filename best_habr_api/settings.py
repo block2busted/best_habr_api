@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import sys
+from logging.config import dictConfig
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -105,7 +106,6 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_RESULT_SERIALIZER = 'json'
 
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -113,14 +113,35 @@ LOGGING = {
         'parser': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(PROJECT_ROOT, 'parser.log'),
+            'filename': os.path.join(PROJECT_ROOT, 'logs/parser.log'),
         },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+        'celery_debug': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(PROJECT_ROOT, 'logs/celery.log'),
+        },
+        'celery_error': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(PROJECT_ROOT, 'logs/celery_error.log'),
+        }
     },
     'loggers': {
         'django': {
-            'handlers': ['parser'],
-            'level': 'ERROR',
+            'handlers': ['parser', 'console'],
             'propagate': True,
         },
+        'celery': {
+            'handlers': ['celery_debug', 'celery_error'],
+            'propagate': True,
+        }
     },
 }
+
+CELERYD_HIJACK_ROOT_LOGGER = False
+
+dictConfig(LOGGING)

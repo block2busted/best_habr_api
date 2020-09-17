@@ -1,5 +1,6 @@
-from articles.models import Article
 from typic import URL as url_type
+
+from articles.models import Article
 
 
 def create_article_object(title: str, url: url_type, content: str):

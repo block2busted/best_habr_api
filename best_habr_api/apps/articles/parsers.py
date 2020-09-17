@@ -23,7 +23,7 @@ class HabrParser:
             return data
         except requests.exceptions.InvalidSchema:
             logger.error(NetworkAddressValueError(f"{URL!r} is not a valid network address."))
-        except (requests.ConnectionError, requests.exceptions.TooManyRedirects, requests.exceptions.RequestException) as e:
+        except requests.exceptions.RequestException as e:
             logger.error(e)
 
     def get_pages_count(self, data: requests.models.Response) -> str:
@@ -52,11 +52,10 @@ class HabrParser:
         data = self.get_data(URL)
         soup = BeautifulSoup(data.text, 'html.parser')
         article_list_from_one_page = soup.find_all('article', class_='post_preview')
-
         for article in article_list_from_one_page:
             title = article.find('a', class_='post__title_link').get_text()
             article_url = article.find('a', class_='post__title_link').get('href')
-            content = self.get_article_content(article_url)
+            content = self.get_article_content(url_type(article_url))
             create_article_object(title, article_url, content)
 
     def parse_and_create_articles(self):
@@ -65,4 +64,3 @@ class HabrParser:
         pages_count = int(self.get_pages_count(data))
         for page_number in range(1, pages_count + 1):
             self.parse_and_create_article_list(url_type(f'{self.URL}page{page_number}'))
-        logger.info('Parsing completed successfully.')

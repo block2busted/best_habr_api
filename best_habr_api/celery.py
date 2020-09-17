@@ -9,9 +9,10 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'best_habr_api.settings')
 app = Celery('best_habr_api')
 app.config_from_object('django.conf:settings')
 app.conf.beat_schedule = {
-    'test-task': {
+    'parse-articles': {
         'task': 'articles.tasks.parse_articles',
         'schedule': crontab(minute=0, hour=0),
-    },
+    }
 }
+
 app.autodiscover_tasks(settings.INSTALLED_APPS)
