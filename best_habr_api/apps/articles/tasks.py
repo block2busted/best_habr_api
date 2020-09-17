@@ -1,9 +1,10 @@
 from celery import shared_task
 
-from .services import parse_and_create_articles
+from .parsers import HabrParser
 
 
 @shared_task
 def parse_articles():
     """Parse and create best articles from https://habr.com/ru every days."""
-    parse_and_create_articles()
+    parser = HabrParser()
+    parser.parse_and_create_articles()
