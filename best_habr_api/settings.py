@@ -104,3 +104,23 @@ CELERY_TASK_SERIALIZER = 'json'
 
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_RESULT_SERIALIZER = 'json'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'parser': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(PROJECT_ROOT, 'parser.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['parser'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
