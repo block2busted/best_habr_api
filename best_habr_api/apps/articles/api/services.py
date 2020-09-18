@@ -3,8 +3,9 @@ from typic import URL as url_type
 from articles.models import Article
 
 
-def create_article_object(title: str, url: url_type, content: str):
-    """Create article object if it not already in the database."""
+def create_article_object(title: str, url: url_type, content: str) -> None:
+    """Create Article-object if does not exists in the DataBase.
+    """
     article_obj = Article.objects.filter(
         title=title,
         url=url
