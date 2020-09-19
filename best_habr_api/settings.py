@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 import sys
 from logging.config import dictConfig
+from celery.schedules import crontab
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -105,6 +106,8 @@ CELERY_TASK_SERIALIZER = 'json'
 
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_RESULT_SERIALIZER = 'json'
+
+CELERY_PARSE_TASK_SCHEDULE = crontab(minute=0, hour=0)
 
 LOGGING = {
     'version': 1,

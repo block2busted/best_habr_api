@@ -1,6 +1,5 @@
 import os
 from celery import Celery
-from celery.schedules import crontab
 from django.conf import settings
 
 
@@ -11,7 +10,7 @@ app.config_from_object('django.conf:settings')
 app.conf.beat_schedule = {
     'parse-articles': {
         'task': 'articles.tasks.parse_articles',
-        'schedule': crontab(minute=0, hour=0),
+        'schedule': settings.CELERY_PARSE_TASK_SCHEDULE
     }
 }
 
