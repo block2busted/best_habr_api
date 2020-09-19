@@ -1,6 +1,5 @@
 import os
 from collections import OrderedDict
-
 import py
 import pytest
 import requests
@@ -334,3 +333,4 @@ class ParseAndCreateArticlesMethodTestCase(TestCase):
             ]
         )
         self.assertEqual(response.data, expected_response_data)
+

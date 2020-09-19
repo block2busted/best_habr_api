@@ -1,6 +1,6 @@
+import os
 import pytest
 from unittest import TestCase
-
 import requests
 from typic import URL as url_type
 
