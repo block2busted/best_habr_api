@@ -45,22 +45,22 @@ class HabrParser:
 
     def get_article_content(self, URL: url_type) -> str:
         """Find <div> tag with the article content.
-        Extract text from there descendants.
+        Extract text from there without empty parts.
         """
         content_data = self.get_data(URL)
         soup = BeautifulSoup(content_data.text, 'html.parser')
         article_content = soup.find('div', class_='post__text')
         valid_tags = ('p', 'h2')
         content_list = []
-        for tag in article_content.descendants:
+        for tag in article_content:
             if tag.name in valid_tags:
                 content_list.append(tag.get_text().replace(u'\xa0', ' ').strip('\r \n'))
             if not tag.name:
                 content_list.append(tag.replace(u'\xa0', ' ').strip('\r \n'))
-        content = ''.join(content_list)
+        content = ' '.join([text for text in content_list if text])
         return content
 
-    def parse_and_create_article_list(self, URL: url_type):
+    def parse_and_create_articles_on_simple_page(self, URL: url_type):
         """Find all <article> tag with article-preview on simple page url.
         Find title, url and content for them.
         And call the function to create article-object.
@@ -69,7 +69,7 @@ class HabrParser:
         soup = BeautifulSoup(data.text, 'html.parser')
         article_list_from_one_page = soup.find_all('article', class_='post_preview')
         for article in article_list_from_one_page:
-            title = article.find('a', class_='post__title_link').get_text()
+            title = article.find('a', class_='post__title_link').get_text().strip('\n \r')
             article_url = article.find('a', class_='post__title_link').get('href')
             content = self.get_article_content(url_type(article_url))
             create_article_object(title, article_url, content)
@@ -82,4 +82,4 @@ class HabrParser:
         data = self.get_data(self.URL)
         pages_count = self.get_pages_count(data)
         for page_number in range(1, pages_count + 1):
-            self.parse_and_create_article_list(url_type(f'{self.URL}page{page_number}'))
+            self.parse_and_create_articles_on_simple_page(url_type(f'{self.URL}page{page_number}'))
