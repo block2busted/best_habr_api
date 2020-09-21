@@ -102,6 +102,7 @@ CELERY_PARSE_TASK_SCHEDULE = 60
 <code>
 redis-cli ping
 # PONG
+cd best_habr_api
 celery -A best_habr_api beat -l info
 </code>
 </pre>
@@ -111,6 +112,7 @@ celery -A best_habr_api beat -l info
 </p>
 <pre>
 <code>
+cd best_habr_api
 celery -A best_habr_api worker -l info
 </code>
 </pre>
