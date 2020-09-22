@@ -13,10 +13,10 @@ Best Habr API is an aggregator of the best articles from <code><a href="https://
 		Include two endpoints:
 		<ul>
 			<li>
-			List of articles;
+			List of articles <code>/api/articles/</code>;
 			</li>
 			<li>
-			Article details.
+			Article details <code>/api/articles/&lt;pk&gt;/</code>.
 			</li>
 		</ul>
 	</li>
@@ -127,3 +127,15 @@ celery -A best_habr_api worker -l info
 <code>
 	/best_habr_api/best_habr_api/logs
 </code>
+
+<h2>
+    Testing
+</h2>
+<p>
+    To run pytests use command in console:
+</p>
+<code>
+    python -m pytest
+</code>
+
+<p>
