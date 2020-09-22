@@ -55,9 +55,8 @@ class HabrParser:
         for tag in article_content:
             if tag.name in valid_tags and tag.contents:
                 content_list.append(tag.get_text().replace(u'\xa0', u' ').strip('\r \n'))
-            if not tag.name and tag:
+            if not tag.name and len(tag.strip('\r \n')) > 0:
                 content_list.append(tag.replace(u'\xa0', ' ').strip('\r \n'))
-        #content = ' '.join([text for text in content_list if text])
         content = ' '.join(content_list)
         return content
 
