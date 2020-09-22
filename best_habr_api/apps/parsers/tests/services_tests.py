@@ -4,7 +4,7 @@ from unittest import TestCase
 import requests
 from typic import URL as url_type
 
-from articles.api.services import create_article_object
+from parsers.services import create_article_object
 from articles.models import Article
 
 

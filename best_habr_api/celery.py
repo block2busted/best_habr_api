@@ -9,7 +9,7 @@ app = Celery('best_habr_api')
 app.config_from_object('django.conf:settings')
 app.conf.beat_schedule = {
     'parse-articles': {
-        'task': 'articles.tasks.parse_articles',
+        'task': 'parsers.tasks.parse_articles',
         'schedule': settings.CELERY_PARSE_TASK_SCHEDULE
     }
 }

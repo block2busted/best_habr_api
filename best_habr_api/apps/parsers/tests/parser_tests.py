@@ -9,7 +9,7 @@ from rest_framework import status
 from typic import URL as url_type
 from rest_framework.reverse import reverse as api_reverse
 
-from articles.parsers import HabrParser
+from parsers.parsers import HabrParser
 from articles.models import Article
 
 _dir = os.path.dirname(os.path.realpath(__file__))
@@ -145,6 +145,7 @@ class GetArticleContentMethodTestCase(TestCase):
     @responses.activate
     def test_method(self):
         content = self.habr_parser.get_article_content(self.URL)
+        print(content)
         self.assertEqual(content, 'First article content. It is a p tag. The end.')
 
 

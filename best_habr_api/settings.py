@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'celery',
     'django_celery_beat',
 
-    'articles'
+    'articles',
+    'parsers'
 ]
 
 MIDDLEWARE = [

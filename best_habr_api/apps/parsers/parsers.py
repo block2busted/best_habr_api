@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from typic import URL as url_type, NetworkAddressValueError
 import logging
 
-from articles.api.services import create_article_object
+from parsers.services import create_article_object
 
 logger = logging.getLogger(__name__)
 
@@ -53,11 +53,12 @@ class HabrParser:
         valid_tags = ('p', 'h2')
         content_list = []
         for tag in article_content:
-            if tag.name in valid_tags:
-                content_list.append(tag.get_text().replace(u'\xa0', ' ').strip('\r \n'))
-            if not tag.name:
+            if tag.name in valid_tags and tag.contents:
+                content_list.append(tag.get_text().replace(u'\xa0', u' ').strip('\r \n'))
+            if not tag.name and tag:
                 content_list.append(tag.replace(u'\xa0', ' ').strip('\r \n'))
-        content = ' '.join([text for text in content_list if text])
+        #content = ' '.join([text for text in content_list if text])
+        content = ' '.join(content_list)
         return content
 
     def parse_and_create_articles_on_simple_page(self, URL: url_type):
