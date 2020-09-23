@@ -1,3 +1,5 @@
+import re
+
 import requests
 from bs4 import BeautifulSoup
 from typic import URL as url_type, NetworkAddressValueError
@@ -38,7 +40,8 @@ class HabrParser:
         """
         try:
             soup = BeautifulSoup(data.text, 'html.parser')
-            pages_count = soup.find_all('a', class_='toggle-menu__item-link_pagination')[-1].get_text()
+            pages_count_href = soup.find_all('a', class_='toggle-menu__item-link_pagination')[-1].get('href')
+            pages_count = re.findall(r'page(.*?)/', pages_count_href)[-1]
             return int(pages_count)
         except IndexError:
             return 1

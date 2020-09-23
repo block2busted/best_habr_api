@@ -96,7 +96,7 @@ class GetPagesCountMethodTestCase(TestCase):
         )
 
         self.habr_parser = HabrParser()
-        self.URL = url_type('https://habr.com/ru/')
+        self.URL_with_pagination = url_type('https://habr.com/ru/')
         self.URL_with_passed_pagination = url_type('https://habr.com/ru/pagination_fail/')
 
     @responses.activate
@@ -106,10 +106,16 @@ class GetPagesCountMethodTestCase(TestCase):
         self.assertEqual(r.status_code, 200)
 
     @responses.activate
-    def test_method(self):
-        data = self.habr_parser.get_data(self.URL)
+    def test_method_with_pagination(self):
+        data = self.habr_parser.get_data(self.URL_with_pagination)
         pages_count = self.habr_parser.get_pages_count(data)
         self.assertEqual(pages_count, 2)
+
+    @responses.activate
+    def test_method_without_pagination(self):
+        data = self.habr_parser.get_data(self.URL_with_passed_pagination)
+        pages_count = self.habr_parser.get_pages_count(data)
+        self.assertEqual(pages_count, 1)
 
     @responses.activate
     def test_IndexError_fail(self):
@@ -335,3 +341,67 @@ class ParseAndCreateArticlesMethodTestCase(TestCase):
         )
         self.assertEqual(response.data, expected_response_data)
 
+
+class ParseAndCreateArticlesWithoutPaginationMethodTestCase(TestCase):
+    @pytest.mark.datafiles(
+        FIXTURE_DIR / 'html_body/article_list_passed_pagination_body.html',
+        FIXTURE_DIR / 'html_body/first_article_content_body.html',
+        FIXTURE_DIR / 'html_body/second_article_content_body.html'
+    )
+    def setUp(self) -> None:
+        with open(FIXTURE_DIR/'html_body/article_list_passed_pagination_body.html') as without_pagination_body_file:
+            body_without_pagination = ''.join(without_pagination_body_file.readlines())
+        responses.add(
+            responses.Response(
+                method='GET',
+                url='https://habr.com/ru/',
+                body=body_without_pagination,
+                status=200,
+                match_querystring=True
+            )
+        )
+        responses.add(
+            responses.Response(
+                method='GET',
+                url='https://habr.com/ru/page1',
+                body=body_without_pagination,
+                status=200,
+                match_querystring=True
+            )
+        )
+        with open(FIXTURE_DIR/'html_body/first_article_content_body.html') as first_article_body_file:
+            first_article_body = ''.join(first_article_body_file.readlines())
+        responses.add(
+            responses.Response(
+                method='GET',
+                url='https://habr.com/ru/post/1/',
+                body=first_article_body,
+                status=200,
+                match_querystring=True
+            )
+        )
+        with open(FIXTURE_DIR/'html_body/second_article_content_body.html') as second_article_body_file:
+            second_article_body = ''.join(second_article_body_file.readlines())
+        responses.add(
+            responses.Response(
+                method='GET',
+                url='https://habr.com/ru/post/2/',
+                body=second_article_body,
+                status=200,
+                match_querystring=True
+            )
+        )
+        self.habr_parser = HabrParser()
+        self.URL = 'https://habr.com/ru/'
+
+    @responses.activate
+    def test_connection(self):
+        r = requests.get(self.URL)
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.text[:15], '<!DOCTYPE html>')
+
+    @responses.activate
+    def test_method(self):
+        self.habr_parser.parse_and_create_articles()
+        article_qs = Article.objects.all()
+        self.assertEqual(article_qs.count(), 2)
