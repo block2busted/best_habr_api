@@ -84,5 +84,8 @@ class HabrParser:
         """
         data = self.get_data(self.URL)
         pages_count = self.get_pages_count(data)
-        for page_number in range(1, pages_count + 1):
-            self.parse_and_create_articles_on_simple_page(url_type(f'{self.URL}page{page_number}'))
+        if pages_count == 1:
+            self.parse_and_create_articles_on_simple_page(self.URL)
+        else:
+            for page_number in range(1, pages_count + 1):
+                self.parse_and_create_articles_on_simple_page(url_type(f'{self.URL}page{page_number}'))
