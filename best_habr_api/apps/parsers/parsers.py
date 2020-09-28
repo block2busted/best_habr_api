@@ -33,6 +33,8 @@ class HabrParser:
             logger.error(NetworkAddressValueError(f"{URL!r} is not a valid network address."))
         except requests.exceptions.RequestException as e:
             logger.error(e)
+        except AttributeError as e:
+            logger.error(e)
 
     def get_pages_count(self, data: requests.models.Response) -> int:
         """Try to find <a> tag with pagination on html text-data and return extracted value.
